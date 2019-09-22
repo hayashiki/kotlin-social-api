@@ -33,7 +33,6 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-    implementation("org.springframework.boot:spring-boot-starter-web")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
@@ -44,6 +43,7 @@ dependencies {
     runtimeOnly("com.h2database:h2")
     implementation("org.springframework.boot:spring-boot-starter-hateoas")
     implementation("org.springframework.security:spring-security-oauth2-client")
+    testImplementation("org.springframework.security:spring-security-test")
 }
 //dependencies {
 //    implementation("org.springframework.boot:spring-boot-starter-data-rest")
@@ -68,7 +68,6 @@ dependencies {
 //    annotationProcessor("org.projectlombok:lombok")
 //    testImplementation("org.springframework.boot:spring-boot-starter-test")
 //    testImplementation("io.projectreactor:reactor-test")
-//    testImplementation("org.springframework.security:spring-security-test")
 //}
 
 dependencyManagement {
