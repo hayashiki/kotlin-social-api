@@ -24,4 +24,12 @@ class TokenProvider(val appProperties: AppProperties) {
                 .signWith(SignatureAlgorithm.HS512, appProperties.auth.tokenSecret)
                 .compact()
     }
+
+    internal fun getUserIdFromToken(token: String): Long? {
+        val claims = Jwts.parser()
+                .setSigningKey(appProperties.auth.tokenSecret)
+                .parseClaimsJws(token)
+                .body
+        return java.lang.Long.parseLong(claims.subject)
+    }
 }

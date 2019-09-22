@@ -1,6 +1,7 @@
 package com.resta.user.domain
 
 import com.fasterxml.jackson.annotation.JsonIgnore
+import com.resta.event.domain.Event
 import org.hibernate.annotations.CreationTimestamp
 import org.hibernate.annotations.UpdateTimestamp
 import java.time.LocalDateTime
@@ -36,10 +37,13 @@ data class User(@Id @GeneratedValue var id: Long? = null) {
 
 //    @JsonIgnore
 //    var providerId: String? = null
-
     @Enumerated(EnumType.STRING)
     @ElementCollection(fetch = FetchType.EAGER)
     val roles: MutableSet<UserRole> = hashSetOf(UserRole.USER)
+
+//    @ManyToMany(mappedBy = "users")
+//    @JsonIgnore
+//    val events: MutableSet<Event> = HashSet()
 
     constructor(email: String, password: String, name: String) : this() {
         this.email = email
