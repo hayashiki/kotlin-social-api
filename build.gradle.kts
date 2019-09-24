@@ -44,6 +44,13 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-hateoas")
     implementation("org.springframework.security:spring-security-oauth2-client")
     testImplementation("org.springframework.security:spring-security-test")
+    implementation("org.modelmapper:modelmapper:2.3.2")
+    compileOnly("org.projectlombok:lombok")
+    testCompileOnly("org.projectlombok:lombok")
+
+    annotationProcessor("org.projectlombok:lombok")
+    testAnnotationProcessor("org.projectlombok:lombok")
+
 }
 //dependencies {
 //    implementation("org.springframework.boot:spring-boot-starter-data-rest")

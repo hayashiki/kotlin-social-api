@@ -17,11 +17,11 @@ class EventMutationIntegrateTest : BaseIntegrateTest() {
     @Test
     @WithUserDetails(value= BaseIntegrateTest.CREATED_USER_EMAIL, userDetailsServiceBeanName = "customUserDetailService")
     @Throws(Exception::class)
-    fun createEventTest__happy() {
+    fun createEventTest__normal() {
 
         val event = EventDTO(
-                "낙성대 주말 코딩",
-                "오전 10시부터 오후 3시까지 각자 모여서 코딩합니다."
+                "hello",
+                "hello description"
         )
 
         val perform = mockMvc

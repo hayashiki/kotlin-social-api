@@ -16,6 +16,7 @@ class UserPrincipalAdapter(val user: User) : OAuth2User, UserDetails {
     private var attributes: Map<String, Any>? = null
 
     init {
+
         this.id = user.id
         this.email = user.email
         this.password = user.password
@@ -26,16 +27,8 @@ class UserPrincipalAdapter(val user: User) : OAuth2User, UserDetails {
         return password
     }
 
-    override fun getAttributes(): Map<String, Any>? {
-        return attributes
-    }
-
-    fun setAttributes(attributes: Map<String, Any>) {
-        this.attributes = attributes
-    }
-
-    override fun getAuthorities(): Collection<GrantedAuthority> {
-        return authorities
+    override fun getUsername(): String? {
+        return email
     }
 
     override fun isAccountNonExpired(): Boolean {
@@ -50,26 +43,40 @@ class UserPrincipalAdapter(val user: User) : OAuth2User, UserDetails {
         return true
     }
 
-    override fun getName(): String {
-        return id.toString()
-    }
-
-    override fun getUsername(): String? {
-        return email
-    }
-
     override fun isEnabled(): Boolean {
         return true
     }
 
+    override fun getAuthorities(): Collection<GrantedAuthority> {
+        return authorities
+    }
+
+    override fun getAttributes(): Map<String, Any>? {
+        return attributes
+    }
+
+    fun setAttributes(attributes: Map<String, Any>) {
+        this.attributes = attributes
+    }
+
+    override fun getName(): String {
+        return id.toString()
+    }
+
     companion object {
-        private fun authorities(roles: Set<UserRole>): Collection<GrantedAuthority> {
-            return roles.map { r -> SimpleGrantedAuthority("ROLE_" + r.name) }
-        }
 
         fun create(user: User): UserPrincipalAdapter {
-
             return UserPrincipalAdapter(user)
+        }
+
+        fun create(user: User, attributes: Map<String, Any>): UserPrincipalAdapter {
+            val userPrincipalAdapter = UserPrincipalAdapter.create(user)
+            userPrincipalAdapter.setAttributes(attributes)
+            return userPrincipalAdapter
+        }
+
+        private fun authorities(roles: Set<UserRole>): Collection<GrantedAuthority> {
+            return roles.map { r -> SimpleGrantedAuthority("ROLE_" + r.name) }
         }
     }
 }

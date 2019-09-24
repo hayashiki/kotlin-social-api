@@ -5,6 +5,8 @@ build/
 !**/src/main/**
 !**/src/test/**
 
+h2db/
+
 ### STS ###
 .apt_generated
 .classpath

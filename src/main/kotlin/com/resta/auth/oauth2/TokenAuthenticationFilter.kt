@@ -8,7 +8,9 @@ import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource
 import org.springframework.util.StringUtils
 import org.springframework.web.filter.OncePerRequestFilter
+import java.io.IOException
 import javax.servlet.FilterChain
+import javax.servlet.ServletException
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
@@ -20,16 +22,21 @@ class TokenAuthenticationFilter : OncePerRequestFilter() {
     @Autowired
     private val userService: CustomUserDetailService? = null
 
+    @Throws(ServletException::class, IOException::class)
     override fun doFilterInternal(request: HttpServletRequest, response: HttpServletResponse, filterChain: FilterChain) {
         try {
             val jwt = getJwtFromRequest(request)
-            val userId = jwt?.let { tokenProvider?.getUserIdFromToken(it) }
 
-            val userDetails = userService!!.loadUserById(userId)
-            val authentication = UsernamePasswordAuthenticationToken(userDetails, null, userDetails.authorities)
-            authentication.details = WebAuthenticationDetailsSource().buildDetails(request)
+            if (StringUtils.hasText(jwt) && jwt?.let { tokenProvider!!.validateToken(it) }!!) {
+                val userId = jwt.let { tokenProvider?.getUserIdFromToken(it) }
 
-            SecurityContextHolder.getContext().authentication = authentication
+                val userDetails = userService!!.loadUserById(userId)
+                val authentication = UsernamePasswordAuthenticationToken(userDetails, null, userDetails.authorities
+                )
+                authentication.details = WebAuthenticationDetailsSource().buildDetails(request)
+
+                SecurityContextHolder.getContext().authentication = authentication
+            }
         } catch (ex: Exception) {
             logger.error("Could not update user authentication in security context", ex)
         }

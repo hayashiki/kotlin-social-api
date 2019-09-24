@@ -31,6 +31,10 @@ class AuthTokenGenerator(
         return token
     }
 
+    fun byUser(user: User): String {
+        return tokenProvider.createToken(user)
+    }
+
     companion object {
 
         private val logger = LoggerFactory.getLogger(AuthTokenGenerator::class.java)

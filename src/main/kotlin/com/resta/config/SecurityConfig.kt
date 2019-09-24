@@ -1,5 +1,8 @@
 package com.resta.config
 
+import com.resta.auth.oauth2.CustomOAuth2UserService
+import com.resta.auth.oauth2.HttpCookieOAuth2AuthorizationRequestRepository
+import com.resta.auth.oauth2.OAuth2AuthenticationSuccessHandler
 import com.resta.auth.oauth2.TokenAuthenticationFilter
 import com.resta.user.service.CustomUserDetailService
 import org.springframework.beans.factory.annotation.Autowired
@@ -7,6 +10,7 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpMethod
 import org.springframework.security.authentication.AuthenticationManager
+import org.springframework.security.config.BeanIds
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
@@ -27,6 +31,9 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
     @Autowired
     private val userService: CustomUserDetailService? = null
 
+    @Autowired
+    private val oAuth2AuthenticationSuccessHandler: OAuth2AuthenticationSuccessHandler? = null
+
     @Bean
     fun passwordEncoder(): PasswordEncoder {
         return BCryptPasswordEncoder()
@@ -37,9 +44,16 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
         return TokenAuthenticationFilter()
     }
 
-    @Bean
+    @Autowired
+    private val customOAuth2UserService: CustomOAuth2UserService? = null
+
+    @Bean(BeanIds.AUTHENTICATION_MANAGER)
     override fun authenticationManagerBean(): AuthenticationManager {
         return super.authenticationManagerBean()
+    }
+
+    fun cookieAuthorizationRequestRepository(): HttpCookieOAuth2AuthorizationRequestRepository {
+        return HttpCookieOAuth2AuthorizationRequestRepository()
     }
 
     public override fun configure(authenticationManagerBuilder: AuthenticationManagerBuilder) {
@@ -47,6 +61,18 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
                 .userDetailsService(userService)
                 .passwordEncoder(passwordEncoder())
 
+    }
+
+    @Throws(Exception::class)
+    override fun configure(web: WebSecurity?) {
+        web!!.ignoring()
+                .antMatchers(HttpMethod.OPTIONS, "/**")
+                .antMatchers("/app/**/*.{js,html}")
+                .antMatchers("/i18n/**")
+                .antMatchers("/content/**")
+                .antMatchers("/h2-console/**")
+                .antMatchers("/swagger-ui/index.html")
+                .antMatchers("/test/**")
     }
 
     override fun configure(http: HttpSecurity) {
@@ -81,7 +107,19 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
                 .permitAll()
                 .anyRequest()
                 .authenticated()
-
+                .and()
+                .oauth2Login()
+                .authorizationEndpoint()
+                .baseUri("/oauth2/authorize")
+                .authorizationRequestRepository(cookieAuthorizationRequestRepository())
+                .and()
+                .redirectionEndpoint()
+                .baseUri("/oauth2/callback/*")
+                .and()
+                .userInfoEndpoint()
+                .userService(customOAuth2UserService!!)
+                .and()
+                .successHandler(oAuth2AuthenticationSuccessHandler)
         http.addFilterBefore(tokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter::class.java)
     }
 }

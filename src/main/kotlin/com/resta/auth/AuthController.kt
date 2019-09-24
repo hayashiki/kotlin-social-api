@@ -21,20 +21,20 @@ class AuthController(
     private val userEnrollService: UserEnrollService
 ) : BaseController() {
 
-//    @PostMapping("/login/facebook")
-//    fun facebookLogin(@RequestBody @Valid dto: FacebookLoginDTO,
-//                      errors: Errors
-//    ) : ResponseEntity<*> {
-//        if (errors.hasErrors()) {
-//            return BadRequest(errors)
-//        }
-//
-//        val user = UserEnrollService.byFacebook(dto.facebookAccessToken)
-//        val token = authTokenGenerator.byUser(user)
-//        val userResource = UserTokenView(user, token)
-//
-//        return ResponseEntity.ok(userResource)
-//    }
+    @PostMapping("/login/facebook")
+    fun facebookLogin(@RequestBody @Valid dto: FacebookLoginDTO,
+                      errors: Errors
+    ) : ResponseEntity<*> {
+        if (errors.hasErrors()) {
+            return BadRequest(errors)
+        }
+
+        val user = userEnrollService.byFacebook(dto.facebookAccessToken)
+        val token = authTokenGenerator.byUser(user)
+        val userResource = UserTokenView(user, token)
+
+        return ResponseEntity.ok(userResource)
+    }
 
     @PostMapping("/login/email")
     fun authenticateUser(

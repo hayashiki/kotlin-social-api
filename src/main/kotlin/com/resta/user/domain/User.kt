@@ -1,6 +1,7 @@
 package com.resta.user.domain
 
 import com.fasterxml.jackson.annotation.JsonIgnore
+import com.resta.auth.OAuth2UserInfo
 import com.resta.event.domain.Event
 import org.hibernate.annotations.CreationTimestamp
 import org.hibernate.annotations.UpdateTimestamp
@@ -28,6 +29,9 @@ data class User(@Id @GeneratedValue var id: Long? = null) {
     @JsonIgnore
     var email: String? = null
 
+    var imageUrl: String? = null
+
+
     @JsonIgnore
     var password: String? = null
 
@@ -35,8 +39,9 @@ data class User(@Id @GeneratedValue var id: Long? = null) {
     @Enumerated(EnumType.STRING)
     var provider: AuthProvider? = null
 
-//    @JsonIgnore
-//    var providerId: String? = null
+    @JsonIgnore
+    var providerId: String? = null
+
     @Enumerated(EnumType.STRING)
     @ElementCollection(fetch = FetchType.EAGER)
     val roles: MutableSet<UserRole> = hashSetOf(UserRole.USER)
@@ -50,5 +55,15 @@ data class User(@Id @GeneratedValue var id: Long? = null) {
         this.password = password
         this.name = name
         this.provider = AuthProvider.local
+    }
+
+    constructor(oAuth2UserInfo: OAuth2UserInfo, provider: AuthProvider) : this() {
+        this.roles.add(UserRole.USER)
+
+        this.name = oAuth2UserInfo.name
+        this.email = oAuth2UserInfo.email
+        this.imageUrl = oAuth2UserInfo.imageUrl
+        this.provider = provider
+        this.providerId = oAuth2UserInfo.id
     }
 }
