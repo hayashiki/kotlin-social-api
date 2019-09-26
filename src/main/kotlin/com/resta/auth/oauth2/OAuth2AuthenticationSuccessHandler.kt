@@ -57,25 +57,6 @@ internal constructor(private val tokenProvider: TokenProvider, private val appPr
 
     private fun isAuthorizedRedirectUri(uri: String): Boolean {
         return true
-
-        // TODO FIX
-        // 프로덕션이 아닌경우 redirect uri 를 느슨하게 가져간다.
-        // CHECK AFTER DEPLOY: profile 이 prod 일지 + type safe 하게 변경
-//        val clientRedirectUri = URI.create(uri)
-//        return appProperties.oauth2.authorizedRedirectUris
-//                .stream()
-//                .anyMatch { authorizedRedirectUri ->
-//                     Only validate host and port. Let the clients use different paths if they want to
-//                    val authorizedURI = URI.create(authorizedRedirectUri)
-//                    if (authorizedURI.host.equals(clientRedirectUri.host, ignoreCase = true) && authorizedURI.port == clientRedirectUri.port) {
-//                         TODO 살려내야함
-//                        return@appProperties.getOauth2().getAuthorizedRedirectUris()
-//                                .stream()
-//                                .anyMatch true
-//                    }
-//                    false
-//                }
-
     }
 }
 

@@ -7,7 +7,7 @@ data class UserView(
         val providers: MutableSet<AuthProvider>
 )
 
-const val DEFAULT_PROFILE = "https://alone-social-static-image.s3.ap-northeast-2.amazonaws.com/profile.png";
+const val DEFAULT_PROFILE = "https://ui-avatars.com/api/?length=1";
 
 fun User.view() = UserView(
         id = id,

@@ -1,6 +1,6 @@
 package com.resta.user.domain
 
-enum class UserRole {
+enum class UserRole{
     ADMIN,
     USER
 }

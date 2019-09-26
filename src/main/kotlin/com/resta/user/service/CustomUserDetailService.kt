@@ -32,15 +32,6 @@ class CustomUserDetailService(
         return UserPrincipalAdapter.create(user)
     }
 
-//    // TODO FIX
-//    fun update(user_: User, userDto: UserDTO): User {
-//
-//        val user = userRepository.findById(user_.id!!).get()
-//
-//        user.update(userDto)
-//
-//        return user
-//    }
 }
 
 @ResponseStatus(HttpStatus.NOT_FOUND)
